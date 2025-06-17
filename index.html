@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cửa Hàng Bán Acc</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .acc-shop, .cart-section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+    .shop-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 30px;
+      color: #ffcc00;
+    }
+    .acc-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .acc-item {
+      background: #2d2d2d;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+    }
+    .acc-img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #1877f2;
+      padding: 20px;
+    }
+    .acc-name {
+      font-size: 20px;
+      margin-top: 10px;
+      color: #ffcc00;
+    }
+    .acc-price {
+      font-size: 18px;
+      color: #00ffcc;
+    }
+    .acc-desc {
+      font-size: 14px;
+      margin: 5px 0 10px;
+      color: #ccc;
+    }
+    .buy-btn {
+      padding: 10px 20px;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #cart {
+      background: #222;
+      margin-top: 40px;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    #cart h3 {
+      margin-top: 0;
+      color: #00ffcc;
+    }
+    .cart-item {
+      background: #333;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      position: relative;
+    }
+    .cart-note {
+      margin-top: 10px;
+      font-family: monospace;
+      background: #1a1a1a;
+      color: #0f0;
+      padding: 10px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+    }
+    .cart-item button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #cc3300;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Admin Login & Panel */
+    #admin-login, #admin-panel {
+      max-width: 300px;
+      margin: 20px auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #admin-login input, #admin-panel input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+    }
+    #admin-login button, #admin-panel button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #admin-login button {
+      background: #1877f2;
+    }
+    #admin-panel button.add-balance {
+      background: #00cc44;
+      margin-bottom: 10px;
+    }
+    #admin-panel button.logout {
+      background: #cc3300;
+    }
+    #admin-login-msg, #admin-action-msg {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    #admin-login-msg {
+      color: #f33;
+    }
+    #admin-action-msg {
+      color: #0f0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login">
+  <h3>Đăng nhập Admin</h3>
+  <input type="email" id="admin-email" placeholder="Email admin" />
+  <input type="password" id="admin-password" placeholder="Mật khẩu" />
+  <button onclick="adminLogin()">Đăng nhập</button>
+  <div id="admin-login-msg"></div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" style="display:none;">
+  <h3>Admin: Cộng tiền</h3>
+  <input type="number" id="add-balance-amount" placeholder="Số tiền cần cộng" />
+  <button class="add-balance" onclick="addBalance()">Cộng tiền</button>
+  <button class="logout" onclick="adminLogout()">Đăng xuất</button>
+  <div id="admin-action-msg"></div>
+</div>
+
+<!-- User info and shop -->
+<div id="user-info" style="max-width:1000px;margin:20px auto;color:#ffcc00;font-size:18px;">
+  Số dư tài khoản: <span id="balance">0</span> VNĐ
+</div>
+
+<div class="acc-shop">
+  <h2 class="shop-title">Cửa Hàng Bán Acc Uy Tín</h2>
+  <div class="acc-list">
+    <div class="acc-item" data-price="9000" data-info="Bao Back - Bật 2fa - Change Pass.">
+      <img class="acc-img" src="https://i.postimg.cc/x13qGN0t/IMG-3289.png" alt="Acc Clone 2012 Cổ" />
+      <div class="acc-name">Acc Clone 2012 Cổ</div>
+      <div class="acc-price">Giá: 9.000 VNĐ</div>
+      <div class="acc-desc">Bao Back - Bật 2fa - Change Pass.</div>
+      <button class="buy-btn" onclick="buyAcc(this)">Mua Ngay</button>
+    </div>
+    <div class="acc-item" data-price="8000" data-info="Bao Back - Bật 2fa - Change Pass.">
+      <img class="acc-img" src="https://i.postimg.cc/x13qGN0t/IMG-3289.png" alt="Acc Facebook Clone 2013" />
+      <div class="acc-name">Acc Facebook Clone 2013</div>
+      <div class="acc-price">Giá: 8.000 VNĐ</div>
+      <div class="acc-desc">Bao Back - Bật 2fa - Change Pass.</div>
+      <button class="buy-btn" onclick="buyAcc(this)">Mua Ngay</button>
+    </div>
+    <div class="acc-item" data-price="200000" data-info="Có đồ hiếm, rank Ace, full set quần áo.">
+      <img class="acc-img" src="https://i.postimg.cc/x13qGN0t/IMG-3289.png" alt="Acc PUBG Mobile #003" />
+      <div class="acc-name">Acc PUBG Mobile #003</div>
+      <div class="acc-price">Giá: 200.000 VNĐ</div>
+      <div class="acc-desc">Có đồ hiếm, rank Ace, full set quần áo.</div>
+      <button class="buy-btn" onclick="buyAcc(this)">Mua Ngay</button>
+    </div>
+  </div>
+</div>
+
+<div id="cart" class="cart-section">
+  <h3>🛒 Giỏ Hàng</h3>
+  <div id="cart-items"></div>
+</div>
+
+<script>
+  // Tài khoản admin: chỉnh email và mật khẩu ở đây
+  const ADMIN_EMAIL = "admin@example.com";
+  const ADMIN_PASSWORD = "123456";
+
+  let userBalance = 0; // ban đầu user không có tiền
+  let cart = JSON.parse(localStorage.getItem('accCart') || '[]');
+  let isAdminLoggedIn = false;
+
+  // Cập nhật số dư hiển thị
+  function updateBalance() {
+    document.getElementById('balance').innerText = userBalance.toLocaleString();
+  }
+
+  // Lưu giỏ hàng localStorage
+  function saveCart() {
+    localStorage.setItem('accCart', JSON.stringify(cart));
+  }
+
+  // Hiển thị giỏ hàng
+  function renderCart() {
+    const container = document.getElementById('cart-items');
+    container.innerHTML = '';
+    cart.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <strong>${item.name}</strong> - SL: ${item.quantity} - Tổng: ${item.totalPrice.toLocaleString()} VNĐ
+        <div class="cart-note" contenteditable="true">${item.info}</div>
+        <button onclick="removeItem(${index})">Xóa</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    saveCart();
+    renderCart();
+  }
+
+  // Mua acc nếu đủ tiền
+  function buyAcc(button) {
+    if (userBalance <= 0) {
+      alert("Bạn chưa có số dư, vui lòng liên hệ admin để được cộng tiền.");
+      return;
+    }
+
+    const accItem = button.closest('.acc-item');
+    const price = Number(accItem.getAttribute('data-price'));
+    const info = accItem.getAttribute('data-info');
+    const name = accItem.querySelector('.acc-name').innerText;
+
+    const quantityStr = prompt('Nhập số lượng muốn mua:', '1');
+    if (!quantityStr) return;
+    const quantity = parseInt(quantityStr);
+    if (isNaN(quantity) || quantity <= 0) {
+      alert('Số lượng không hợp lệ.');
+      return;
+    }
+
+    const totalPrice = price * quantity;
+    if (userBalance < totalPrice) {
+      alert('Bạn không đủ tiền. Cần: ' + totalPrice.toLocaleString() + ' VNĐ.');
+      return;
+    }
+
+    userBalance -= totalPrice;
+    updateBalance();
+
+    const order = {
+      name,
+      quantity,
+      totalPrice,
+      info: `Đơn hàng mới từ admin:\n${info}`
+    };
+    cart.push(order);
+    saveCart();
+    renderCart();
+    alert('✅ Mua tài khoản thành công! Vui lòng vào giỏ hàng để sao chép hoặc xem thông tin.');
+  }
+
+  // Đăng nhập admin
+  function adminLogin() {
+    const email = document.getElementById('admin-email').value.trim();
+    const password = document.getElementById('admin-password').value;
+
+    const msg = document.getElementById('admin-login-msg');
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      isAdminLoggedIn = true;
+      msg.style.color = '#0f0';
+      msg.innerText = 'Đăng nhập thành công!';
+      // Ẩn login, hiện admin panel
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+    } else {
+      isAdminLoggedIn = false;
+      msg.style.color = '#f33';
+      msg.innerText = 'Email hoặc mật khẩu không đúng!';
+    }
+  }
+
+  // Đăng xuất admin
+  function adminLogout() {
+    isAdminLoggedIn = false;
+    document.getElementById('admin-login-msg').innerText = '';
+    document.getElementById('admin-action-msg').innerText = '';
+    document.getElementById('admin-email').value = '';
+    document.getElementById('admin-password').value = '';
+    document.getElementById('add-balance-amount').value = '';
+    document.getElementById('admin-login').style.display = 'block';
+    document.getElementById('admin-panel').style.display = 'none';
+  }
+
+  // Admin cộng tiền
+  function addBalance() {
+    if (!isAdminLoggedIn) {
+      alert('Bạn cần đăng nhập admin để thực hiện chức năng này.');
+      return;
+    }
+
+    const amountInput = document.getElementById('add-balance-amount');
+    const msg = document.getElementById('admin-action-msg');
+    const amount = parseInt(amountInput.value);
+
+    if (isNaN(amount) || amount <= 0) {
+      msg.style.color = '#f33';
+      msg.innerText = 'Số tiền không hợp lệ!';
+      return;
+    }
+
+    userBalance += amount;
+    updateBalance();
+    amountInput.value = '';
+    msg.style.color = '#0f0';
+    msg.innerText = `Đã cộng ${amount.toLocaleString()} VNĐ vào số dư tài khoản!`;
+  }
+
+  updateBalance();
+  renderCart();
+</script>
+
+</body>
+</html>
